@@ -2,6 +2,86 @@
 
 **60 秒**即可开始使用插件。
 
+本仓库原生支持 **Claude Code 插件 marketplace**，并提供 **Codex Desktop / Codex CLI** 适配层。Claude Code 用户按下方 Claude Code 流程安装；Codex 用户可直接跳到「在 Codex 中安装」。
+
+## 在 Codex 中安装
+
+在仓库根目录运行：
+
+```bash
+scripts/install-codex.sh
+```
+
+默认会把 `.agents/skills/chinese-legal-*` 链接到：
+
+```text
+~/.codex/skills
+```
+
+安装后请重启 Codex Desktop 或重新打开 Codex CLI 会话。
+
+Codex 中不需要输入 Claude Code slash command，直接用自然语言提出任务即可，例如：
+
+```text
+请审查这份供应商合同，重点看责任限制、解除、赔偿、数据处理和争议解决。
+```
+
+```text
+我们准备上线用户画像推荐功能，请判断是否需要个人信息保护影响评估。
+```
+
+更多说明见 [INSTALL_CODEX.md](INSTALL_CODEX.md)。
+
+## 在 DeepSeek Harness（dsh）中安装
+
+在仓库根目录运行：
+
+```bash
+scripts/install-dsh.sh
+```
+
+默认会把 `.dsh/skills/chinese-legal-*` 链接到：
+
+```text
+~/.dsh/skills
+```
+
+并登记仓库路径、向 `~/.dsh/AGENTS.md` 写入法律工作守则。安装后新开 dsh 会话即可用自然语言下达法律任务。
+
+也可以零安装体验：在 dsh web 中直接把本仓库目录添加为工作区，`.dsh/skills` 与 `AGENTS.md` 会被自动发现。
+
+法条/案例检索 MCP（元典、chineselaw）的 `cordis.patch.yml` 配置片段、权限预设与卸载说明见 [INSTALL_DSH.md](INSTALL_DSH.md)。
+
+## 在 WorkBuddy 中安装
+
+在仓库根目录运行：
+
+```bash
+scripts/install-workbuddy.sh
+```
+
+默认会把 `.workbuddy/skills/chinese-legal-*` 链接到：
+
+```text
+~/.workbuddy/skills
+```
+
+安装后在 WorkBuddy 的「专家·技能·连接器」面板确认技能已启用，即可用自然语言下达法律任务——adapter 描述为中文并含触发词，会被自动匹配调用。
+
+也可以零安装体验：把本仓库目录作为 WorkBuddy 项目目录打开，项目级 `.workbuddy/skills` 会被自动发现。
+
+MCP 法律检索配置（`~/.workbuddy/mcp.json`）、技能包分发改装与卸载说明见 [INSTALL_WORKBUDDY.md](INSTALL_WORKBUDDY.md)。
+
+## Claude Code 一键添加 marketplace
+
+Claude Code 用户也可以先运行：
+
+```bash
+scripts/install-claude-code.sh
+```
+
+脚本会添加本地 marketplace，并打印可安装插件列表。安装具体插件时仍建议选择用户级（user scope）。
+
 ## 在 Claude Code 中安装
 
 1. **打开 Claude Code**（在终端中）。
@@ -61,7 +141,7 @@
 
 ## 盒子里有什么
 
-12 个业务领域插件，5 个托管 Agent 蓝图，yuandian MCP 连接器。完整参考见 [README.md](README.md)。
+13 个业务领域插件，5 个托管 Agent 蓝图，yuandian MCP 连接器。完整参考见 [README.md](README.md)。
 
 ## 遇到问题？
 

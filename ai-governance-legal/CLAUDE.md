@@ -3,19 +3,19 @@ CONFIGURATION LOCATION
 
 User-specific configuration for this plugin lives at a version-independent path that survives plugin updates:
 
-  ~/.claude/plugins/config/claude-for-legal/ai-governance-legal/CLAUDE.md
+  ~/.claude/plugins/config/claude-for-legal-zh/ai-governance-legal/CLAUDE.md
 
 Rules for every skill, command, and agent in this plugin:
 1. READ configuration from that path. Not from this file.
 2. If that file does not exist or still contains [PLACEHOLDER] markers, STOP before doing substantive work. Say: "This plugin needs setup before it can give you useful output. Run /ai-governance-legal:cold-start-interview — it takes about 10-15 minutes and every command in this plugin depends on it. Without it, outputs will be generic and may not match how your practice actually works." Do NOT proceed with placeholder or default configuration. The only skills that run without setup are /ai-governance-legal:cold-start-interview itself and any --check-integrations flag.
 3. Setup and cold-start-interview WRITE to that path, creating parent directories as needed.
 4. On first run after a plugin update, if a populated CLAUDE.md exists at the old cache path
-   (~/.claude/plugins/cache/claude-for-legal/ai-governance-legal/<version>/CLAUDE.md for any version)
+   (~/.claude/plugins/cache/claude-for-legal-zh/ai-governance-legal/<version>/CLAUDE.md for any version)
    but not at the config path, copy it forward to the config path before proceeding.
 5. This file (the one you are reading) is the TEMPLATE. It ships with the plugin and shows the
    structure the config should have. It is replaced on every plugin update. Never write user data here.
 
-**Shared company profile.** Company-level facts (who you are, what you do, where you operate, your risk posture, key people) live in `~/.claude/plugins/config/claude-for-legal/company-profile.md` — one level above this file, shared by all 12 plugins. Read it before this plugin's practice profile. If it doesn't exist, this plugin's setup will create it.
+**Shared company profile.** Company-level facts (who you are, what you do, where you operate, your risk posture, key people) live in `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` — one level above this file, shared by all 12 plugins. Read it before this plugin's practice profile. If it doesn't exist, this plugin's setup will create it.
 -->
 
 # AI 治理实务画像
@@ -89,7 +89,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ## AI 系统清单
 
-**清单文件：** `~/.claude/plugins/config/claude-for-legal/ai-governance-legal/ai-systems.yaml`
+**清单文件：** `~/.claude/plugins/config/claude-for-legal-zh/ai-governance-legal/ai-systems.yaml`
 
 在中国 AI 监管框架下，**角色和风险层级按 AI 系统评估，不按公司。** 一个组织可以是系统A的提供者、系统B的部署者——每个组合触发不同的义务集合。本清单每条记录对应一个系统。
 
@@ -273,7 +273,7 @@ Rules for every skill, command, and agent in this plugin:
 
 **文件访问失败。** 不保持沉默。
 
-**验证日志。** 记录到 `~/.claude/plugins/config/claude-for-legal/ai-governance-legal/verification-log.md`。
+**验证日志。** 记录到 `~/.claude/plugins/config/claude-for-legal-zh/ai-governance-legal/verification-log.md`。
 
 ---
 
@@ -305,7 +305,7 @@ AI 监管领域变化极快——生成式人工智能管理办法、科技伦�
 
 ### 知识库检索路由
 
-按 `/Users/CS/Documents/知识库/.claude/rules/knowledge-routing.md` 执行。
+知识库检索路由统一遵循 `company-profile.md`「本地知识库」段的约定（变量 `[KB_ROOT]`、路由算法、未配置时的降级行为均在该段定义）。该约定为全插件单一来源，本处不重复。
 
 **来源层级。** 搜索规则、规定或法律动态时，按以下顺序优先：
 1. **原始来源：网信办、科技部、工信部等官方发布。** 标记 `[primary source]`。

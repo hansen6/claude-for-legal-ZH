@@ -2,13 +2,18 @@
 
 <p align="center">
   <a href="https://github.com/CSlawyer1985/claude-for-legal-ZH/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" alt="License"></a>
-  <a href="https://github.com/CSlawyer1985/claude-for-legal-ZH"><img src="https://img.shields.io/badge/version-v1.0.0-brightgreen" alt="Version"></a>
+  <a href="https://github.com/CSlawyer1985/claude-for-legal-ZH"><img src="https://img.shields.io/badge/version-v1.1.0-brightgreen" alt="Version"></a>
   <a href="https://github.com/CSlawyer1985/claude-for-legal-ZH/stargazers"><img src="https://img.shields.io/github/stars/CSlawyer1985/claude-for-legal-ZH?style=social" alt="Stars"></a>
   <a href="https://github.com/CSlawyer1985/claude-for-legal-ZH"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"></a>
+  <a href="INSTALL_DSH.md"><img src="https://img.shields.io/badge/DeepSeek%20Harness-已适配-4D6BFE" alt="DeepSeek Harness 适配"></a>
+  <a href="INSTALL_WORKBUDDY.md"><img src="https://img.shields.io/badge/WorkBuddy-已适配-0052D9" alt="WorkBuddy 适配"></a>
+  <a href="INSTALL_CODEX.md"><img src="https://img.shields.io/badge/Codex-已适配-000000" alt="Codex 适配"></a>
   <br>
   <b>为最常见的中国法律工作流提供的参考 Agent、技能和数据连接器</b>
   <br>
   涵盖商事合同 · 隐私数据 · 产品合规 · 公司并购 · 劳动用工 · 争议解决 · 监管合规 · AI 治理 · 知识产权 · 法学教育 · 法律诊所
+  <br>
+  <b>一套中国法律技能插件集，多端运行：Claude Code · DeepSeek Harness（dsh） · Codex · WorkBuddy</b>
 </p>
 
 ---
@@ -19,7 +24,7 @@
   <img src="docs/assets/hero.png" alt="Claude for Legal 中国法版本 — 着陆页 Hero" width="800">
 </p>
 
-本仓库所有内容可通过**两种方式**使用：安装为 [Claude Code](https://claude.com/product/claude-code) 插件，或通过 [Claude Managed Agents API](https://docs.claude.com/en/api/managed-agents) 部署在你自己的工作流引擎后台。同一套 system prompt，同一套技能——你选择在哪里运行。
+本仓库是一套**面向中国法律实务的通用插件集**——以 13 个业务领域的技能、领域规则与法律工作流为主体，内嵌参考材料与数据连接器，并可接入外部法律检索知识库（元典、chineselaw 等 MCP）。它不绑定单一 agent 环境：可安装为 [Claude Code](https://claude.com/product/claude-code) 插件，可通过一键脚本接入 [DeepSeek Harness（dsh）](https://github.com/deepseek-ai/deepseek-harness)、**Codex** 或 **WorkBuddy**（腾讯工作智能体），也可通过 [Claude Managed Agents API](https://docs.claude.com/en/api/managed-agents) 部署在你自己的工作流引擎后台。同一套 system prompt，同一套技能——你选择在哪里运行。
 
 ## 在 Claude Code 中安装
 
@@ -47,6 +52,56 @@
 > **这些插件的所有输出均为律师审查草稿——不是法律意见，不是法律结论，不替代律师。** 插件在设计层面内置了相应的安全机制：每条引用标注来源，涉主观法律判断默认保守处理，管辖权假设明示标注，任何提交、发送或依赖前设有明确门槛。律师审查、核实并对所有对外产出承担专业责任。插件让审查更快，但不能替代审查。
 >
 > **这些插件不代表 Anthropic 的法律立场。** 它们是帮助律师分析问题的工具。技能中包含的清单项目、建议框架、风险标记、案例法或监管指引的定性描述，均为辅助审查律师自身分析的参考，而非 Anthropic 对法律的表态。许多领域的法律处于未定和演进之中。使用插件的律师——而非插件本身，也非 Anthropic——对其工作成果中的法律立场负责。
+
+## 多端适配：Claude Code · DeepSeek Harness · Codex · WorkBuddy
+
+本仓库不绑定单一 agent 环境——同一套技能、工作流与安全规则，可在以下运行环境中使用：
+
+| 运行环境 | 安装方式 | 完整指南 |
+|----------|----------|----------|
+| **Claude Code** | `/plugin marketplace add` + `/plugin install`（见上文） | [QUICKSTART.md](QUICKSTART.md) |
+| **DeepSeek Harness（dsh）** | `scripts/install-dsh.sh` | [INSTALL_DSH.md](INSTALL_DSH.md) |
+| **Codex Desktop / CLI** | `scripts/install-codex.sh` | [INSTALL_CODEX.md](INSTALL_CODEX.md) |
+| **WorkBuddy**（腾讯工作智能体） | `scripts/install-workbuddy.sh` | [INSTALL_WORKBUDDY.md](INSTALL_WORKBUDDY.md) |
+
+四套适配层共用同一组 `chinese-legal-*` 路由技能名与同一套领域工作流，可同时安装、互不干扰。
+
+### DeepSeek Harness（dsh）
+
+[DeepSeek Harness](https://github.com/deepseek-ai/deepseek-harness) 是 DeepSeek 官方开源的 agent harness（Web UI / CLI / headless）。本仓库提供 **dsh 原生适配层**：18 个 `chinese-legal-*` adapter skill、一键安装脚本、法条检索 MCP 配置片段与权限预设模板。
+
+```bash
+scripts/install-dsh.sh    # 默认符号链接安装到 ~/.dsh/skills，git pull 即更新
+```
+
+- **原生技能发现**——`.dsh/skills` 是 dsh 官方扫描根目录，适配层自动进入技能目录，热更新无需重启
+- **零安装体验**——把本仓库目录直接添加为 dsh 工作区即可使用（`AGENTS.md`、`CLAUDE.md` 指令自动注入）
+- **全局法律工作守则**——安装脚本向 `~/.dsh/AGENTS.md` 幂等写入“律师审查草稿、时效内容需验证”等底线规则
+- **法条检索 MCP**——元典（yuandian）与 chineselaw 的 `cordis.patch.yml` 现成配置，工具命名与 Claude Code 一致（`mcp__<server>__<tool>`）
+- **权限预设**——legal-readonly / matter-write / export-only 三档，与法律项目 `input/`、`scratch/`、`output/` 三层目录的合规边界对齐
+
+### Codex
+
+```bash
+scripts/install-codex.sh    # 默认符号链接安装到 ~/.codex/skills
+```
+
+Codex Desktop / CLI 适配层提供同样的 18 个 `chinese-legal-*` adapter skill，自然语言下达任务即可，无需输入 Claude Code slash command。
+
+### WorkBuddy
+
+[WorkBuddy](https://cloud.tencent.com/document/product/1831/134432) 是腾讯出品的工作智能体（桌面端 / 移动端 / 鸿蒙），其技能体系与 Claude Code 同属 SKILL.md 生态。本仓库提供 WorkBuddy 原生适配层：18 个 `chinese-legal-*` adapter skill（中文 description 含触发词，匹配其自动调用机制）+ 一键安装脚本。
+
+```bash
+scripts/install-workbuddy.sh    # 默认符号链接安装到 ~/.workbuddy/skills
+```
+
+- **中文触发优化**——adapter 描述为中文并标注触发词，契合 WorkBuddy 按 description 自动匹配技能的机制
+- **零安装体验**——把本仓库目录作为 WorkBuddy 项目目录打开即可（项目级 `.workbuddy/skills` 自动发现）
+- **MCP 同构配置**——`~/.workbuddy/mcp.json` 采用标准 `mcpServers` 格式，元典、chineselaw 等法律检索服务可直接接入
+- **技能市场可分发**——18 个 adapter 可按 WorkBuddy 技能包规范打包上传，企业版可内部统一分发
+
+多端优先级说明：dsh 的技能发现优先级规则保证 dsh 版 adapter 自动覆盖同名 Codex 版；WorkBuddy 与 Codex 各有独立 skills 目录。四套适配层命名统一、可同时安装，互不干扰。
 
 ## 中国法本地化改造说明
 
@@ -80,6 +135,17 @@
 | **五组内容分离** | 诉讼文书编辑时强制区分：证据列举/质证意见/证据认定/查明事实/争议焦点分析 |
 | **时效验证流程** | 引用具体法条、司法解释、诉讼时效时强制独立检索验证 |
 | **知识库路由** | 优先源（理解与适用/类案指南/最高院审判实务）→扩展源→效力警示源，按权威分级检索 |
+| **知识库路径可配置** | `[KB_ROOT]` 变量抽象，各人按自己的环境配置一次根目录，仓库不再绑定特定机器的绝对路径 |
+| **多端适配（社区贡献）** | Codex、DeepSeek Harness（dsh）、WorkBuddy 三套适配层，各 18 个 adapter skill + 一键安装脚本，同一套技能与工作流同时服务 Claude Code、Codex、dsh 与 WorkBuddy 用户 |
+| **知识库四步交叉引用协议** | 路由规则加载 → Wiki 概念检索 → 原始数据源检索（优先源→扩展源）→ 外部补充（MCP/联网搜索），每步强制不得跳过 |
+| **主体信用自动查询** | 首次出现非自然人主体时触发信用查询：实体锚定 → 基础画像+风险扫描（并行）→ 关键人员穿透，生成结构化信用报告 |
+| **Agentic Search 路由** | 三层 C1/C2/C3 路由：复杂多维问题自动跳过常规管线进入多源并行深度检索，常规管线不足时自动升级 |
+| **法律文书编辑纪律** | 基准稿锁定 → 五组内容分离 → 证据边界纪律 → 跨段落一致性校验 → 联动更新顺序 → 常见失误自检 |
+| **合同审核质量门禁** | 效力审查（名实不符/格式条款/审批登记）→ 主体授权审查 → 八维条款审查 → 修订方式路由决策树（自检四问）→ 终稿三件套 |
+| **尽职调查六阶段方法论** | 项目立项 → 指引加载 → 底稿摄入与转换 → 事实查明与证据映射 → 问题条线推进 → 交付输出（报告三段式写作+质量门禁） |
+| **庭审准备框架** | 材料收集 → 案件分析 → 五模块庭审提纲（案件概览/争议焦点/事实查明/法律适用/发问提纲），多角色适配 |
+| **法律咨询分析工作流** | 启动门禁（先建文件夹再检索）→ 意图分析与问题拆解 → 分层研究 → 综合解答 → 效力审计，四档服务深度自动匹配 |
+| **法律服务报价框架** | 八阶段流程：项目启动 → 需求分析 → 知识库检索 → 服务策略 → 报价策略（六种方式决策矩阵）→ 方案撰写 → 质量审核 → 输出 |
 
 <p align="center">
   <img src="docs/assets/method-1.png" alt="方法论 — 步骤 1" width="400">
@@ -90,7 +156,7 @@
 
 ### 知识库集成
 
-本版本深度集成用户知识库体系（`/Users/CS/Documents/知识库/`），包含：
+本版本支持深度集成本地法律知识库体系（知识库根目录在 `company-profile.md` 的「本地知识库」段配置），包含：
 
 - **法律优先源**：最高法法官权威释义（理解与适用丛书）、类案裁判指引、最高院审判实务观点、指导案例/典型案例/人民法院案例库、税务/财政/国资委权威答复
 - **扩展检索源**：32,500+ 法律公众号文章（按领域+权威双维组织）、法律法规数据库、分类实务文章
@@ -117,11 +183,27 @@
 
 所有参考文件引用法条均标注 `[法条原文]` 来源溯源标签，独立于知识库使用。
 
+### 共享工作流参考文件（v1.1 新增）
+
+除各插件内置的法律规则参考文件外，`references/` 目录下新增 7 个跨插件共享的工作流方法论参考文件，可被任意插件按需引用：
+
+| 文件 | 适用插件 | 内容 |
+|------|----------|------|
+| `knowledge-base-crossref.md` | 全部插件 | 四步知识库交叉引用协议——路由规则加载 → Wiki 概念检索 → 原始数据源检索 → 外部补充，含来源标注速查表和 C2 Agentic Search 升级钩子 |
+| `agentic-search-routing.md` | 全部插件 | 三层路由规则（C1 自动判定/C2 管线兜底/C3 用户指令）——当问题涉及 ≥3 个独立法律维度或常规管线不足时，自动升级至多源并行深度检索 |
+| `due-diligence-workflow.md` | corporate-legal | 六阶段尽调方法论——项目立项 → 指引加载 → 底稿摄入与转换 → 事实查明与证据映射（含证据链格式）→ 问题条线推进 → 交付输出（三段式报告写作+质量门禁） |
+| `trial-preparation-framework.md` | litigation-legal | 庭审准备框架——案件材料收集 → 分析（基础信息/时间线/法律问题/检索）→ 五模块庭审提纲（案件概览/争议焦点/事实查明/法律适用/发问提纲），支持原告/被告/仲裁员多角色适配 |
+| `contract-review-quality-gates.md` | commercial-legal | 合同审核质量门禁——效力审查（名实不符/格式条款/审批登记）→ 主体与授权 → 八维条款审查 → 修订方式路由决策树（自检四问）→ 终稿三件套 → 特殊合同类型矩阵 |
+| `consulting-workflow.md` | legal-clinic | 法律咨询分析工作流——启动门禁（先建文件夹再检索）→ 意图分析与问题拆解 → 分层检索研究 → 综合解答 → 效力审计，四档服务深度自动匹配（法条确认/单一问题/复杂商业法律问题/正式法律意见书） |
+| `pricing-proposal-framework.md` | legal-clinic | 法律服务报价八阶段流程——项目启动与意图分析 → 客户需求结构化分析（七维度+复杂度评估）→ 知识库检索与研究 → 服务策略制定（核心/推荐/可选/排除四级服务范围）→ 报价策略选择与计算（六种方式决策矩阵+费用调整机制）→ 方案撰写 → 质量审核 → 输出，支持三类方案结构（诉讼代理/非诉专项/常年顾问） |
+
+所有共享工作流参考文件均来源于中国法律实务经验，不包含个人路径或密钥。各插件 CLAUDE.md 的"共享安全机制"段落中已内联引用对应文件。
+
 ---
 
 ## 盒子里有什么
 
-- **12 个业务领域插件**——覆盖律所、法务和学术法律工作，每个插件围绕冷启动面试构建，生成实践画像（`CLAUDE.md`），所有技能从中读取配置。
+- **13 个业务领域插件**——覆盖律所、法务和学术法律工作，每个插件围绕冷启动面试构建，生成实践画像（`CLAUDE.md`），所有技能从中读取配置。
 - **托管 Agent 蓝图**——用于定时、持续监控型工作流（续签监控、案件进度监控、法规动态监控、尽调网格、产品上线雷达）。
 - **MCP 连接器**——覆盖通用生产力工具（飞书、Google Drive）和法律专属系统（元典 yuandian、北大法宝、威科先行、e签宝、聚法案例等）。
 - **命名 Agent**——端到端工作流 Agent（供应商合同审查、个人信息主体权利响应、劳动合同解除审查、要件分析表构建……），每个 Agent 有独立的职位式名称和单一启动命令。
@@ -252,9 +334,11 @@ regulatory-legal/         # 监管合规——法规动态监控、政策差异�
 ai-governance-legal/      # AI 治理——场景分流、算法评估、供应商AI审查、法规差距
 ip-legal/                 # 知识产权——商标检索、FTO、侵权警告、通知-删除、开源合规、组合管理
 litigation-legal/         # 争议解决——案件组合、登记、证据保全、律师函、庭前准备、要件分析
+criminal-legal/           # 刑事辩护与合规——阅卷梳理、取保候审、辩护策略、合规不起诉（强制脱敏）
 legal-clinic/             # 法律诊所——诊所设置、学生导入、接待、节点、备忘录、移交
 law-student/              # 法学教育——课堂训练、知识体系、IRAC、法考备考、记忆卡片
 legal-builder-hub/        # 社区技能发现与安装，含信任门槛
+references/               # 共享参考文件——知识库协议、Agentic Search 路由、尽调/庭审/合同审核/咨询/报价工作流
 external_plugins/         # 合作方构建的插件（由供应商维护）
 managed-agent-cookbooks/  # Claude Managed Agent 蓝图——每个定时 Agent 一个目录
   diligence-grid/
@@ -319,6 +403,7 @@ scripts/                  # deploy-managed-agent.sh · validate.py · orchestrat
 | 插件 | 功能 |
 |------|------|
 | **[litigation-legal](./litigation-legal)** | 两个工作界面。**法务/组合管理：** 案件登记、组合状态、证据保全、外部律师状态、律师函。**律所/诉讼律师：** 大事记构建、要件分析表（专利和民事）、庭前准备、证据三性审查、法律文书起草。 |
+| **[criminal-legal](./criminal-legal)** | 刑事辩护与合规（强制脱敏使用）。阅卷笔录与证据链梳理、供述矛盾点排查。取保候审及羁押必要性审查辅助。辩护策略分析（罪与非罪、此罪与彼罪）。涉案企业合规不起诉审查。内置刑诉法核心条文与合规评估基准参考库。 |
 
 ### 学习与实践
 
@@ -366,9 +451,9 @@ scripts/                  # deploy-managed-agent.sh · validate.py · orchestrat
 | **飞书（Lark）** | 读取频道、搜索、发送消息和文档 | 全部插件 | 你的工作空间 |
 | **Google Drive** | 读取文档、表格、幻灯片；按链接获取 | 全部插件 | 你的账户（可选） |
 | **yuandian（元典）** | 案例检索、法规检索——覆盖裁判文书和法律法规 | 全部插件 | 公共；OAuth |
-| **北大法宝** | 法律法规、司法解释、案例检索 | `ip-legal`、`litigation-legal`、`law-student`、`legal-clinic` | 客户订阅 |
-| **威科先行** | 法律数据库——法规、案例、实务文章 | `commercial-legal`、`corporate-legal`、`litigation-legal` | 客户订阅 |
-| **聚法案例** | 案例检索和裁判文书分析 | `litigation-legal` | 客户订阅 |
+| **北大法宝** | 法律法规、司法解释、案例检索 | `ip-legal`、`litigation-legal`、`law-student`、`legal-clinic`、`criminal-legal` | 客户订阅 |
+| **威科先行** | 法律数据库——法规、案例、实务文章 | `commercial-legal`、`corporate-legal`、`litigation-legal`、`criminal-legal` | 客户订阅 |
+| **聚法案例** | 案例检索和裁判文书分析 | `litigation-legal`、`criminal-legal` | 客户订阅 |
 | **e签宝 / 法大大** | 电子合同签署和合同台账 | `commercial-legal` | 客户订阅 |
 | **国家知识产权局** | 商标/专利检索和状态查询 | `ip-legal` | 公共 |
 | **中国政府网 / 司法部法律法规数据库** | 官方法规数据库 | `regulatory-legal`、`ai-governance-legal` | 公共 |
@@ -538,6 +623,17 @@ scripts/                  # deploy-managed-agent.sh · validate.py · orchestrat
 | `/litigation-legal:brief-section-drafter` | brief-section-drafter | 按内部风格起草法律文书章节 |
 | scheduled | docket-watcher (agent) | 监控法院案件进展和截止日期 |
 
+### criminal-legal
+
+| 命令 | 技能 | 功能 |
+|------|------|------|
+| `/criminal-legal:cold-start-interview` | cold-start-interview | 冷启动——执业角色、辩护立场校准、业务画像 |
+| `/criminal-legal:case-analysis` | case-analysis | 阅卷笔录与证据链梳理——时间线交叉对比、矛盾点排查 |
+| `/criminal-legal:bail-application` | bail-application | 提取法定/酌定事由，辅助撰写取保候审及羁押必要性审查申请 |
+| `/criminal-legal:compliance-non-prosecution` | compliance-non-prosecution | 涉案企业合规整改草案审查与盲点提示 |
+| `/criminal-legal:defense-strategy` | defense-strategy | 辩护策略分析——罪与非罪、此罪与彼罪、争议焦点 |
+| `/criminal-legal:matter-workspace` | matter-workspace | 管理事项工作空间 |
+
 ### privacy-legal
 
 | 命令 | 技能 | 功能 |
@@ -600,7 +696,7 @@ scripts/                  # deploy-managed-agent.sh · validate.py · orchestrat
 - **新技能** → 添加到 `<插件名>/skills/<技能名>/SKILL.md`，使用现有技能的前置元数据（`name`、`description`、`argument-hint`）。描述保持在 1024 字符以内——这是触发信号。技能可通过 `/<插件名>:<技能名>` 调用。纯参考技能标记 `user-invocable: false`。
 - **新 Agent** → 添加 `<插件名>/agents/<名称>.md`，含调度前置元数据和 system prompt。如需无头部署，添加匹配的 `managed-agent-cookbooks/<名称>/`。
 - **社区技能** → 使用 `/legal-builder-hub:skill-installer` 在你的环境中测试社区技能。Hub 在每次安装前运行 `/legal-builder-hub:skills-qa`，对技能进行评分（九个设计参数、三种法律失败模式、信任面检查），拒绝任何不通过的技能。
-- **推送前验证蓝图** → `bash scripts/test-cookbooks.sh` 对所有托管 Agent 蓝图进行预检，并对编排器工具范围进行 lint。
+- **推送前验证蓝图** → `python scripts/check-release.py` 检查技能前置元数据、JSON/YAML 合法性和私人路径/密钥泄露（Windows 可运行）；`bash scripts/test-cookbooks.sh` 对所有托管 Agent 蓝图进行预检，并对编排器工具范围进行 lint。以上检查同时配置在 GitHub Actions（`release-check.yml`）中自动执行。
 
 ## 许可证
 
@@ -614,11 +710,59 @@ scripts/                  # deploy-managed-agent.sh · validate.py · orchestrat
 
 **陈石律师**，浙江海泰律师事务所副主任、高级合伙人、房地产与建设工程部主任，宁波市律师协会副秘书长、第七届宁波仲裁委员会仲裁员，聚焦建筑房地产、投融资、并购重组及商事争议解决。曾获多家法律媒体与专业机构认可，荣登 LegalOne 2025 中国区建工及房地产实务先锋 45 强、律新社 2025 年度管理合伙人 20 佳（华东），入选《商法》The A-List 法律精英，获评 ALB China 区域市场十五佳长三角地区律师新星，并获律新社 2024 年度并购领域品牌之星。长期为万科、华润置地、信达地产、保利置业、招商蛇口、中海地产等企业提供法律服务，承办"首宗百亿地王""长春第一高楼""台州第一高楼"等代表性项目，累计服务项目投资额超千亿。近年来持续推动 AI 与法律实务融合，强调以结构化方法打通技术逻辑、法律判断与商业场景；著有《赋能法律人：AI 底层思维与应用范式》，并在多地开展相关主题讲座与分享。
 
-本中国法适配版本由陈石律师基于其知识库体系（`/Users/CS/Documents/知识库/`）和多年法律实务经验完成从美国法到中国法的系统改造。
+本中国法适配版本由陈石律师基于其本地法律知识库体系和多年法律实务经验完成从美国法到中国法的系统改造。
 
 <p align="center">
   <img src="docs/assets/testimonial.png" alt="用户评价" width="800">
 </p>
+
+## 社区贡献者
+
+感谢每一位为本项目做出贡献的社区成员 🎉
+
+<table align="center">
+  <tr>
+    <td align="center" width="260">
+      <a href="https://github.com/kanekanefy">
+        <img src="https://github.com/kanekanefy.png" width="80" style="border-radius: 50%;" alt="kanekanefy"><br>
+        <b>@kanekanefy</b>
+      </a><br>
+      Codex 多端适配层<br>一键安装脚本
+    </td>
+    <td align="center" width="260">
+      <a href="https://github.com/icedfish">
+        <img src="https://github.com/icedfish.png" width="80" style="border-radius: 50%;" alt="Xiaopai"><br>
+        <b>@icedfish</b>（Xiaopai）
+      </a><br>
+      知识库检索约定收敛<br>民诉法条号修正
+    </td>
+    <td align="center" width="260">
+      <a href="https://github.com/xingbogu">
+        <img src="https://github.com/xingbogu.png" width="80" style="border-radius: 50%;" alt="xingbogu"><br>
+        <b>@xingbogu</b>
+      </a><br>
+      插件配置路径隔离<br>避免中美版本串扰
+    </td>
+    <td align="center" width="260">
+      <a href="https://github.com/yuanweize">
+        <img src="https://github.com/yuanweize.png" width="80" style="border-radius: 50%;" alt="yuanweize"><br>
+        <b>@yuanweize</b>
+      </a><br>
+      criminal-legal 刑事模块<br>脱敏红线与防幻觉设计
+    </td>
+    <td align="center" width="260">
+      <a href="https://github.com/Jamesyu0829">
+        <img src="https://github.com/Jamesyu0829.png" width="80" style="border-radius: 50%;" alt="Jamesyu0829"><br>
+        <b>@Jamesyu0829</b>
+      </a><br>
+      发布检查脚本与 CI<br>Windows 兼容性修复
+    </td>
+  </tr>
+</table>
+
+<p align="center"><sub>头像来自 GitHub，点击可跳转至贡献者主页</sub></p>
+
+---
 
 ## 致谢
 

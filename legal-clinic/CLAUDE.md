@@ -3,19 +3,19 @@ CONFIGURATION LOCATION
 
 User-specific configuration for this plugin lives at a version-independent path that survives plugin updates:
 
-  ~/.claude/plugins/config/claude-for-legal/legal-clinic/CLAUDE.md
+  ~/.claude/plugins/config/claude-for-legal-zh/legal-clinic/CLAUDE.md
 
 Rules for every skill, command, and agent in this plugin:
 1. READ configuration from that path. Not from this file.
 2. If that file does not exist or still contains [PLACEHOLDER] markers, STOP before doing substantive work. Say: "This plugin needs setup before it can give you useful output. Run /legal-clinic:cold-start-interview — it takes about 10-15 minutes and every command in this plugin depends on it. Without it, outputs will be generic and may not match how your practice actually works." Do NOT proceed with placeholder or default configuration. The only skills that run without setup are /legal-clinic:cold-start-interview itself and any --check-integrations flag.
 3. Setup and cold-start-interview WRITE to that path, creating parent directories as needed.
 4. On first run after a plugin update, if a populated CLAUDE.md exists at the old cache path
-   (~/.claude/plugins/cache/claude-for-legal/legal-clinic/<version>/CLAUDE.md for any version)
+   (~/.claude/plugins/cache/claude-for-legal-zh/legal-clinic/<version>/CLAUDE.md for any version)
    but not at the config path, copy it forward to the config path before proceeding.
 5. This file (the one you are reading) is the TEMPLATE. It ships with the plugin and shows the
    structure the config should have. It is replaced on every plugin update. Never write user data here.
 
-**Shared company profile.** Company-level facts (who you are, what you do, where you operate, your risk posture, key people) live in `~/.claude/plugins/config/claude-for-legal/company-profile.md` — one level above this file, shared by all 12 plugins. Read it before this plugin's practice profile. If it doesn't exist, this plugin's setup will create it.
+**Shared company profile.** Company-level facts (who you are, what you do, where you operate, your risk posture, key people) live in `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md` — one level above this file, shared by all 12 plugins. Read it before this plugin's practice profile. If it doesn't exist, this plugin's setup will create it.
 -->
 
 # 法学院法律诊所实践画像
@@ -209,7 +209,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ## Supervisor guide
 
-指导老师可以在 `~/.claude/plugins/config/claude-for-legal/legal-clinic/guides/<practice-area>.md` 撰写按实践领域的指导。面向学生的技能在做实质性工作前阅读该指导。指导控制：
+指导老师可以在 `~/.claude/plugins/config/claude-for-legal-zh/legal-clinic/guides/<practice-area>.md` 撰写按实践领域的指导。面向学生的技能在做实质性工作前阅读该指导。指导控制：
 
 - **接待问题。**对此诊所类型应向新客户问什么。红旗信号。什么使一个案件适合受理。
 - **教学姿态。**技能做多少 vs. 学生做多少。默认为 `guide`（技能起草结构，学生填入实质内容，技能给出反馈 — 平衡）。需要快速推进的指导老师可设为 `assist`（技能产出工作成果，学生审查）。希望学生通过实践学习的指导老师可设为 `teach`（技能要求学生先起草，给出反馈，仅在学生尝试后才展示示范）。
@@ -274,7 +274,7 @@ Rules for every skill, command, and agent in this plugin:
 
 **文件访问失败。**当你无法读取用户指向的文件时，不要静默失败。说出发生了什么并提供可能的修复方案。
 
-**核实日志。**当你或用户核实了一个标记项时，在 `~/.claude/plugins/config/claude-for-legal/legal-clinic/verification-log.md` 中写入一行记录。当出现的标记项已在核实日志中时，审查备注引用该条目。日志是按插件的，不是按事项的。
+**核实日志。**当你或用户核实了一个标记项时，在 `~/.claude/plugins/config/claude-for-legal-zh/legal-clinic/verification-log.md` 中写入一行记录。当出现的标记项已在核实日志中时，审查备注引用该条目。日志是按插件的，不是按事项的。
 
 ---
 
@@ -308,7 +308,7 @@ Rules for every skill, command, and agent in this plugin:
 *驱动 `/deadlines`。默认节奏：截止日期前 14、7、3 和 1 天出现预警。逾期截止日期保持标记直到标记完成或明确关闭。*
 
 **预警天数（Warning days）：** [PLACEHOLDER — 默认 14, 7, 3, 1]
-**截止日期文件（Deadlines file）：** `~/.claude/plugins/config/claude-for-legal/legal-clinic/deadlines.yaml`（由 `/deadlines --add` 填充）
+**截止日期文件（Deadlines file）：** `~/.claude/plugins/config/claude-for-legal-zh/legal-clinic/deadlines.yaml`（由 `/deadlines --add` 填充）
 
 ---
 
@@ -343,6 +343,12 @@ Rules for every skill, command, and agent in this plugin:
 ## 处理检索结果（Handling retrieved results）
 
 当研究 MCP、网络搜索或文件获取返回结果时，三条规则约束处理：来源标签描述发生了什么而非你想声称什么；引用前做"命题核查"；当工具与模型冲突时呈现两者并标记。
+
+## 咨询服务与报价框架
+
+本插件的咨询分析技能遵循 `references/consulting-workflow.md`：启动门禁（先建文件夹再检索）→ 意图分析与问题拆解 → 分层检索研究 → 综合解答 → 效力审计。根据问题类型自动匹配四档服务深度（法条确认/单一问题/复杂商业法律问题/正式法律意见书）。正式交付物附审查备注，行动建议以决策树收尾。
+
+法律服务报价方案遵循 `references/pricing-proposal-framework.md` 八阶段流程：项目启动与意图分析 → 客户需求结构化分析 → 知识库检索与研究 → 服务策略制定 → 报价策略选择与计算 → 方案撰写 → 质量审核 → 方案输出。支持三类方案结构（诉讼代理/非诉专项/常年顾问）和六种报价方式决策矩阵。
 
 ## 大容量输入（Large input）
 

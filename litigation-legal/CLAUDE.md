@@ -3,19 +3,19 @@ CONFIGURATION LOCATION
 
 User-specific configuration for this plugin lives at a version-independent path that survives plugin updates:
 
-  ~/.claude/plugins/config/claude-for-legal/litigation-legal/CLAUDE.md
+  ~/.claude/plugins/config/claude-for-legal-zh/litigation-legal/CLAUDE.md
 
 Rules for every skill, command, and agent in this plugin:
 1. READ configuration from that path. Not from this file.
 2. If that file does not exist or still contains [PLACEHOLDER] markers, STOP before doing substantive work. Say: "此插件需要完成设置才能提供有用输出。请运行 /litigation-legal:cold-start-interview —— 约需 10-15 分钟，插件中所有命令均依赖此设置。未完成设置前输出的内容将是通用的，可能不匹配你的实务操作。" Do NOT proceed with placeholder or default configuration. The only skills that run without setup are /litigation-legal:cold-start-interview itself and any --check-integrations flag.
 3. Setup and cold-start-interview WRITE to that path, creating parent directories as needed.
 4. On first run after a plugin update, if a populated CLAUDE.md exists at the old cache path
-   (~/.claude/plugins/cache/claude-for-legal/litigation-legal/<version>/CLAUDE.md for any version)
+   (~/.claude/plugins/cache/claude-for-legal-zh/litigation-legal/<version>/CLAUDE.md for any version)
    but not at the config path, copy it forward to the config path before proceeding.
 5. This file (the one you are reading) is the TEMPLATE. It ships with the plugin and shows the
    structure the config should have. It is replaced on every plugin update. Never write user data here.
 
-**共享公司画像。** 公司级别信息存储在 `~/.claude/plugins/config/claude-for-legal/company-profile.md`——位于本文件上层，由全部插件共享。在读取本插件的实践画像前先读取该文件。如该文件不存在，本插件的设置流程会创建它。
+**共享公司画像。** 公司级别信息存储在 `~/.claude/plugins/config/claude-for-legal-zh/company-profile.md`——位于本文件上层，由全部插件共享。在读取本插件的实践画像前先读取该文件。如该文件不存在，本插件的设置流程会创建它。
 -->
 
 # 诉讼业务实践画像
@@ -225,7 +225,76 @@ Rules for every skill, command, and agent in this plugin:
 | 证据目录 | 编号是否连贯、证明目的是否清晰、原件/复印件标注是否正确、是否按证据三性分组 |
 | 申请书 | （保全/调查取证/鉴定/追加当事人等）理由是否充分、是否在期限内提出 |
 
-### 三值处理：不沉默补充
+### 基准稿锁定（强制）
+
+开始编辑任何法律文书前，必须：
+1. 确认基准稿绝对路径，向用户明示"当前以 xxx 为基准稿"
+2. 不混用相近版本——如果用户手改过，立即切换到用户版本作为新基准稿
+3. 后续修改默认另存新稿，不覆盖基准稿
+4. 多次编辑间，每次重新确认基准稿是否仍是最新
+
+**违反后果**：在旧稿上继续改、覆盖用户手改内容、前后版本表述不一致。
+
+### 证据边界纪律（强制）
+
+**禁止事项**：
+1. **不替当事人扩写证明目的**——当事人没主张的证明逻辑，不能出现在证据认定中
+2. **不替对方补充质证逻辑**——对方没提的质证点，不能出现在质证意见中
+3. **不把裁判者的理解写成当事人的主张**——仲裁庭/法庭的分析和当事人的主张必须严格区分
+
+**证据认定与争议分析的协调**：
+- 前面认定写"只能证明存在后续合同安排"，后面分析不能写"该证据已证明后续合同当然及于某方"
+- 证据认定中写清"证明力边界"，争议分析中再结合全案其他证据完成法律评价
+
+**可合并认定 vs 需限缩认定**：
+- **可合并**：主体资格类、名称变更类、不动产权证书等基础权属类证据
+- **需限缩**：后续合同、三方协议、函件往来、微信记录、快递记录、现场照片、披露材料
+
+### 修改边界纪律
+
+1. 用户限定"只改某段以后"——不顺手调整前面
+2. 用户限定"只做批注"——不改正文
+3. 用户要求"另存"——不覆盖原件
+4. 觉得某句话可以顺便优化——不要优化
+
+**最容易犯的错**：
+1. 证据认定改完后，把前面的证据名称改成了另一种简称
+2. 主文金额改了，但事实查明和争议分析没有同步
+3. 为了"语言更顺"，把当事人的证明目的写成自己理解的证明目的
+4. 前面改了一个表述，后面相关段落没有跟进统一
+
+### 跨段落一致性校验清单
+
+每次完成编辑后，必须检查：
+
+- [ ] 证据编号是否全文连续、无跳号
+- [ ] 合同简称/当事人称谓是否全文统一
+- [ ] 金额是否全文一致、能算平
+- [ ] 期间表述是否互相承接
+- [ ] 日期是否合理、无矛盾
+- [ ] 主文与事实查明是否一致
+- [ ] 争议分析中引用的证据编号和名称与前文一致
+
+### 联动更新顺序
+
+涉及裁决书 + 核查表 + 对比表等多文件联动时，按以下顺序：
+1. 先确定裁决书口径（主文件）
+2. 再校准争议观点核查表
+3. 再校准证据对比表
+4. 最后校准表格数据
+
+**禁止**先改表格、后改裁决书——会造成口径再漂移。表格更新只做定点更新，不重建。
+
+### 常见失误自检
+
+编辑完成后逐项检查：
+1. 是否在旧版文稿上继续改（未切换基准稿）
+2. 用户已手工修订的内容是否被覆盖
+3. 改了证据认定，后文分析是否同步
+4. 改了金额，主文是否同步
+5. 证据名称、合同简称是否前后统一
+6. 是否替当事人扩写了证明目的
+7. 是否为了"语言更顺"破坏了法律结构
 
 当技能需要它没有的信息（法规的完整文本、某地法院的裁判口径、当前生效日期），有三个有效响应：
 
@@ -244,11 +313,11 @@ Rules for every skill, command, and agent in this plugin:
 
 ### 知识库检索路由
 
-本插件优先使用本地法律知识库进行检索。当需要知识库数据支撑时：
-1. 读取知识库路由配置：`/Users/CS/Documents/知识库/.claude/rules/knowledge-routing.md`
-2. 按优先源 → 警示源 → 一般源顺序执行检索
-3. 知识库不足时再补充 yuan dian MCP 或联网搜索
-4. 引用知识库内容时标注 `[本地知识库]` 标签
+知识库检索路由统一遵循 `company-profile.md`「本地知识库」段的约定（变量 `[KB_ROOT]`、路由算法、未配置时的降级行为均在该段定义）。该约定为全插件单一来源，本处不重复。
+
+### 庭审准备框架
+
+本插件的庭审准备类技能遵循 `references/trial-preparation-framework.md`：案件材料收集 → 案件分析（基础信息/时间线/法律问题/检索）→ 输出庭审提纲。默认庭审提纲包含五个模块：案件概览、争议焦点归纳、事实查明提纲、法律适用提纲、庭审发问提纲。支持原告/被告/仲裁员/代理律师多角色视角适配。
 
 ### 引用前预检
 
@@ -282,7 +351,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ### 验证日志
 
-在 `~/.claude/plugins/config/claude-for-legal/litigation-legal/verification-log.md` 中记录核实条目：
+在 `~/.claude/plugins/config/claude-for-legal-zh/litigation-legal/verification-log.md` 中记录核实条目：
 
 `[YYYY-MM-DD] [引用或事实] 由 [姓名] 对照 [来源] 核实 —— [结论：已确认 / 已修正为 X / 无法核实]`
 
@@ -296,7 +365,7 @@ Rules for every skill, command, and agent in this plugin:
 
 ## 本领域的临时问题
 
-当用户在本插件的实践领域提出问题，首先读取 `~/.claude/plugins/config/claude-for-legal/litigation-legal/CLAUDE.md`，并应用。如已填充，以已配置的助手身份回答——使用其风险偏好、争议画像、文书风格和上报链。
+当用户在本插件的实践领域提出问题，首先读取 `~/.claude/plugins/config/claude-for-legal-zh/litigation-legal/CLAUDE.md`，并应用。如已填充，以已配置的助手身份回答——使用其风险偏好、争议画像、文书风格和上报链。
 
 ## 比例原则
 
@@ -320,7 +389,7 @@ Rules for every skill, command, and agent in this plugin:
 **活跃事项：** 无
 **跨事项背景：** 关
 
-当事项工作区启用时，技能在活跃事项的背景下工作。技能读取本实践级 CLAUDE.md 获得实践画像级规则，读取事项的 `matter.md` 获得事项级事实和覆盖。输出写入 `~/.claude/plugins/config/claude-for-legal/litigation-legal/matters/<matter-slug>/` 下的事项文件夹。
+当事项工作区启用时，技能在活跃事项的背景下工作。技能读取本实践级 CLAUDE.md 获得实践画像级规则，读取事项的 `matter.md` 获得事项级事实和覆盖。输出写入 `~/.claude/plugins/config/claude-for-legal-zh/litigation-legal/matters/<matter-slug>/` 下的事项文件夹。
 
 当跨事项背景关闭（默认），在事项 A 中工作的技能永不会读取事项 B 的文件。应跨事项传承的学习内容写入本实践级 CLAUDE.md，而非事项文件夹。
 

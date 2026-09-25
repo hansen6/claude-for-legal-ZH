@@ -138,9 +138,11 @@ HANDOFF_PAYLOAD_SCHEMA = {
     },
 }
 
-HANDOFF_RE = re.compile(
-    r'\{"type":\s*"handoff_request".*?\}', re.DOTALL
-)
+# Locates only the opening of a handoff_request object. The object itself is
+# read with raw_decode, which tracks nesting and string literals — a regex
+# ending at the first "}" would cut off the nested payload/params objects.
+HANDOFF_START_RE = re.compile(r'\{"type":\s*"handoff_request"')
+_JSON_DECODER = json.JSONDecoder()
 
 # Denylist for instruction-like phrasing. Low-assurance; see docstring.
 _DENY_PREFIX = ("#", ">", "---", "System:", "Assistant:", "Human:",
@@ -242,30 +244,31 @@ def extract_handoff(text: str, source_agent: str = "unknown") -> dict | None:
     Returns a dict with target_agent, intent, params, and pre-rendered
     steering_input, or None if any gate fails. Every attempt is logged.
     """
-    m = HANDOFF_RE.search(text)
+    m = HANDOFF_START_RE.search(text)
     if not m:
         return None
-    raw = m.group(0)
+    start = m.start()
     try:
-        obj = json.loads(raw)
+        obj, end = _JSON_DECODER.raw_decode(text, start)
     except json.JSONDecodeError:
         audit_log({"source": source_agent, "result": "reject",
-                   "reason": "invalid_json", "raw_len": len(raw)})
+                   "reason": "invalid_json", "raw_len": len(text) - start})
         return None
+    raw_len = end - start
 
     target = obj.get("target_agent")
     payload = obj.get("payload")
     if target not in ALLOWED_TARGETS:
         audit_log({"source": source_agent, "target": target,
                    "result": "reject", "reason": "target_not_allowlisted",
-                   "raw_len": len(raw)})
+                   "raw_len": raw_len})
         return None
     try:
         jsonschema.validate(instance=payload, schema=HANDOFF_PAYLOAD_SCHEMA)
     except jsonschema.ValidationError as e:
         audit_log({"source": source_agent, "target": target,
                    "result": "reject", "reason": f"schema: {e.message}",
-                   "raw_len": len(raw)})
+                   "raw_len": raw_len})
         return None
 
     intent = payload["intent"]
@@ -273,7 +276,7 @@ def extract_handoff(text: str, source_agent: str = "unknown") -> dict | None:
     if not _validate_params(intent, params):
         audit_log({"source": source_agent, "target": target, "intent": intent,
                    "result": "reject", "reason": "params_schema",
-                   "raw_len": len(raw)})
+                   "raw_len": raw_len})
         return None
 
     raw_event = payload.get("event", "") or ""
